@@ -1,0 +1,197 @@
+[debug] [2023-06-13T10:37:40.508Z] ----------------------------------------------------------------------
+[debug] [2023-06-13T10:37:40.514Z] Command:       /home/administrator/.nvm/versions/node/v18.4.0/bin/node /home/administrator/.nvm/versions/node/v18.4.0/bin/firebase init
+[debug] [2023-06-13T10:37:40.515Z] CLI Version:   12.3.1
+[debug] [2023-06-13T10:37:40.515Z] Platform:      linux
+[debug] [2023-06-13T10:37:40.516Z] Node Version:  v18.4.0
+[debug] [2023-06-13T10:37:40.516Z] Time:          Tue Jun 13 2023 12:37:40 GMT+0200 (Central European Summer Time)
+[debug] [2023-06-13T10:37:40.516Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-06-13T10:37:40.526Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-06-13T10:37:40.526Z] > authorizing via signed-in user (kptgowniak@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /home/administrator/git/snapchat
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2023-06-13T10:37:57.136Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
+[debug] [2023-06-13T10:37:58.019Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2023-06-13T10:37:58.020Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[info] i  Using project robosnap-6be23 (robosnap) 
+[info] 
+=== Database Setup
+[info] i  database: ensuring required API firebasedatabase.googleapis.com is enabled... 
+[debug] [2023-06-13T10:37:59.796Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/firebasedatabase.googleapis.com [none]
+[debug] [2023-06-13T10:37:59.797Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/firebasedatabase.googleapis.com x-goog-quota-user=projects/robosnap-6be23
+[debug] [2023-06-13T10:38:00.851Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/firebasedatabase.googleapis.com 200
+[debug] [2023-06-13T10:38:00.851Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/firebasedatabase.googleapis.com [omitted]
+[info] ✔  database: required API firebasedatabase.googleapis.com is enabled 
+[info] 
+[debug] [2023-06-13T10:38:00.853Z] >>> [apiv2][query] GET https://firebasedatabase.googleapis.com/v1beta/projects/robosnap-6be23/locations/-/instances/robosnap-6be23-default-rtdb [none]
+[debug] [2023-06-13T10:38:01.233Z] <<< [apiv2][status] GET https://firebasedatabase.googleapis.com/v1beta/projects/robosnap-6be23/locations/-/instances/robosnap-6be23-default-rtdb 200
+[debug] [2023-06-13T10:38:01.234Z] <<< [apiv2][body] GET https://firebasedatabase.googleapis.com/v1beta/projects/robosnap-6be23/locations/-/instances/robosnap-6be23-default-rtdb {"name":"projects/988410923552/locations/europe-west1/instances/robosnap-6be23-default-rtdb","project":"projects/988410923552","databaseUrl":"https://robosnap-6be23-default-rtdb.europe-west1.firebasedatabase.app","type":"DEFAULT_DATABASE","state":"ACTIVE"}
+[info] 
+[info] Firebase Realtime Database Security Rules allow you to define how your data should be
+[info] structured and when your data can be read from and written to.
+[info] 
+[debug] [2023-06-13T10:38:07.103Z] >>> [apiv2][query] GET https://robosnap-6be23-default-rtdb.europe-west1.firebasedatabase.app/.settings/rules.json [none]
+[debug] [2023-06-13T10:38:07.316Z] <<< [apiv2][status] GET https://robosnap-6be23-default-rtdb.europe-west1.firebasedatabase.app/.settings/rules.json 200
+[debug] [2023-06-13T10:38:07.316Z] <<< [apiv2][body] GET https://robosnap-6be23-default-rtdb.europe-west1.firebasedatabase.app/.settings/rules.json [stream]
+[info] ✔  Database Rules for robosnap-6be23-default-rtdb have been written to database.rules.json. 
+[info] Future modifications to database.rules.json will update Realtime Database Security Rules when you run
+[info] firebase deploy.
+[info] 
+=== Firestore Setup
+[debug] [2023-06-13T10:38:07.320Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/firestore.googleapis.com [none]
+[debug] [2023-06-13T10:38:07.320Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/firestore.googleapis.com x-goog-quota-user=projects/robosnap-6be23
+[debug] [2023-06-13T10:38:08.477Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/firestore.googleapis.com 200
+[debug] [2023-06-13T10:38:08.477Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/firestore.googleapis.com [omitted]
+[debug] [2023-06-13T10:38:08.478Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/robosnap-6be23/databases/(default) [none]
+[debug] [2023-06-13T10:38:08.959Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/robosnap-6be23/databases/(default) 200
+[debug] [2023-06-13T10:38:08.959Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/robosnap-6be23/databases/(default) {"name":"projects/robosnap-6be23/databases/(default)","uid":"bb94b59f-d913-4253-a1b3-de15e952595b","createTime":"2023-06-13T10:37:02.102704Z","updateTime":"2023-06-13T10:37:02.102704Z","locationId":"eur3","type":"FIRESTORE_NATIVE","concurrencyMode":"PESSIMISTIC","appEngineIntegrationMode":"DISABLED","keyPrefix":"e","deleteProtectionState":"DELETE_PROTECTION_DISABLED","etag":"ILT2hvOGwP8CMLDBmdOGwP8C"}
+[debug] [2023-06-13T10:38:08.960Z] database_type: FIRESTORE_NATIVE
+[debug] [2023-06-13T10:38:08.960Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-06-13T10:38:08.960Z] > authorizing via signed-in user (kptgowniak@gmail.com)
+[debug] [2023-06-13T10:38:08.960Z] [iam] checking project robosnap-6be23 for permissions ["firebase.projects.get"]
+[debug] [2023-06-13T10:38:08.962Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/robosnap-6be23:testIamPermissions [none]
+[debug] [2023-06-13T10:38:08.962Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/robosnap-6be23:testIamPermissions x-goog-quota-user=projects/robosnap-6be23
+[debug] [2023-06-13T10:38:08.962Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/robosnap-6be23:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2023-06-13T10:38:09.984Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/robosnap-6be23:testIamPermissions 200
+[debug] [2023-06-13T10:38:09.984Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/robosnap-6be23:testIamPermissions {"permissions":["firebase.projects.get"]}
+[info] 
+[info] Firestore Security Rules allow you to define how and when to allow
+[info] requests. You can keep these rules in your project directory
+[info] and publish them with firebase deploy.
+[info] 
+[debug] [2023-06-13T10:38:12.134Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/robosnap-6be23/releases pageSize=10&pageToken=
+[debug] [2023-06-13T10:38:13.228Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/robosnap-6be23/releases 200
+[debug] [2023-06-13T10:38:13.229Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/robosnap-6be23/releases {"releases":[{"name":"projects/robosnap-6be23/releases/cloud.firestore","rulesetName":"projects/robosnap-6be23/rulesets/98ce8008-40a1-41dd-9d24-ecdad2894d49","createTime":"2023-06-13T10:37:06.443512Z","updateTime":"2023-06-13T10:37:06.443512Z"}]}
+[debug] [2023-06-13T10:38:13.230Z] Found ruleset: projects/robosnap-6be23/rulesets/98ce8008-40a1-41dd-9d24-ecdad2894d49
+[debug] [2023-06-13T10:38:13.231Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/robosnap-6be23/rulesets/98ce8008-40a1-41dd-9d24-ecdad2894d49 [none]
+[debug] [2023-06-13T10:38:14.180Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/robosnap-6be23/rulesets/98ce8008-40a1-41dd-9d24-ecdad2894d49 200
+[debug] [2023-06-13T10:38:14.180Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/robosnap-6be23/rulesets/98ce8008-40a1-41dd-9d24-ecdad2894d49 [omitted]
+[info] 
+[info] Firestore indexes allow you to perform complex queries while
+[info] maintaining performance that scales with the size of the result
+[info] set. You can keep index definitions in your project directory
+[info] and publish them with firebase deploy.
+[info] 
+[debug] [2023-06-13T10:38:16.039Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/robosnap-6be23/databases/(default)/collectionGroups/-/indexes [none]
+[debug] [2023-06-13T10:38:16.053Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/robosnap-6be23/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* [none]
+[debug] [2023-06-13T10:38:16.436Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/robosnap-6be23/databases/(default)/collectionGroups/-/indexes 200
+[debug] [2023-06-13T10:38:16.437Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/robosnap-6be23/databases/(default)/collectionGroups/-/indexes {}
+[debug] [2023-06-13T10:38:16.822Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/robosnap-6be23/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* 200
+[debug] [2023-06-13T10:38:16.822Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/robosnap-6be23/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* {"fields":[{"name":"projects/robosnap-6be23/databases/(default)/collectionGroups/__default__/fields/*","indexConfig":{"indexes":[{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","order":"ASCENDING"}],"state":"READY"},{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","order":"DESCENDING"}],"state":"READY"},{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","arrayConfig":"CONTAINS"}],"state":"READY"}]}}]}
+[info] 
+=== Functions Setup
+[debug] [2023-06-13T10:38:16.826Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-06-13T10:38:16.826Z] > authorizing via signed-in user (kptgowniak@gmail.com)
+[debug] [2023-06-13T10:38:16.827Z] [iam] checking project robosnap-6be23 for permissions ["firebase.projects.get"]
+[debug] [2023-06-13T10:38:16.827Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/robosnap-6be23:testIamPermissions [none]
+[debug] [2023-06-13T10:38:16.828Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/robosnap-6be23:testIamPermissions x-goog-quota-user=projects/robosnap-6be23
+[debug] [2023-06-13T10:38:16.828Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/robosnap-6be23:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2023-06-13T10:38:17.802Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/robosnap-6be23:testIamPermissions 200
+[debug] [2023-06-13T10:38:17.803Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/robosnap-6be23:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2023-06-13T10:38:17.804Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/cloudfunctions.googleapis.com [none]
+[debug] [2023-06-13T10:38:17.804Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/robosnap-6be23
+[debug] [2023-06-13T10:38:17.816Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/runtimeconfig.googleapis.com [none]
+[debug] [2023-06-13T10:38:17.817Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/robosnap-6be23
+[debug] [2023-06-13T10:38:19.004Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/cloudfunctions.googleapis.com 200
+[debug] [2023-06-13T10:38:19.005Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/cloudfunctions.googleapis.com [omitted]
+[debug] [2023-06-13T10:38:19.006Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/cloudfunctions.googleapis.com:enable [none]
+[debug] [2023-06-13T10:38:19.006Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/cloudfunctions.googleapis.com:enable x-goog-quota-user=projects/robosnap-6be23
+[debug] [2023-06-13T10:38:19.019Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/runtimeconfig.googleapis.com 200
+[debug] [2023-06-13T10:38:19.020Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2023-06-13T10:38:20.761Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/cloudfunctions.googleapis.com:enable 200
+[debug] [2023-06-13T10:38:20.761Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/cloudfunctions.googleapis.com:enable [omitted]
+[debug] [2023-06-13T10:38:30.771Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/cloudfunctions.googleapis.com [none]
+[debug] [2023-06-13T10:38:30.772Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/robosnap-6be23
+[debug] [2023-06-13T10:38:31.812Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/cloudfunctions.googleapis.com 200
+[debug] [2023-06-13T10:38:31.812Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/robosnap-6be23/services/cloudfunctions.googleapis.com [omitted]
+[info] Let's create a new codebase for your functions.
+[info] A directory corresponding to the codebase will be created in your project
+[info] with sample code pre-configured.
+
+[info] See https://firebase.google.com/docs/functions/organize-functions for
+[info] more information on organizing your functions using codebases.
+
+[info] Functions can be deployed with firebase deploy.
+
+[info] ✔  Wrote functions/package.json 
+[info] ✔  Wrote functions/.eslintrc.js 
+[info] ✔  Wrote functions/tsconfig.json 
+[info] ✔  Wrote functions/tsconfig.dev.json 
+[info] ✔  Wrote functions/src/index.ts 
+[info] ✔  Wrote functions/.gitignore 
+[info] 
+=== Hosting Setup
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 
+[info] ✔  Wrote public/404.html 
+[debug] [2023-06-13T10:41:12.563Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/releases.json [none]
+[debug] [2023-06-13T10:41:12.815Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/releases.json 200
+[debug] [2023-06-13T10:41:12.816Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/releases.json {"current":{"version":"9.22.2","browserURL":"https://www.gstatic.com/firebasejs/9.22.2/firebase.js","packageURL":"https://www.gstatic.com/firebasejs/9.22.2/firebase.tgz"},"live":{"version":"9.22","browserURL":"https://www.gstatic.com/firebasejs/live/9.22/firebase.js","packageURL":"https://www.gstatic.com/firebasejs/live/9.22/firebase.tgz"},"components":{"analytics":"https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js","app":"https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js","app-check":"https://www.gstatic.com/firebasejs/9.22.2/firebase-app-check.js","auth":"https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js","auth/cordova":"https://www.gstatic.com/firebasejs/9.22.2/firebase-auth/cordova.js","auth/react-native":"https://www.gstatic.com/firebasejs/9.22.2/firebase-auth/react-native.js","functions":"https://www.gstatic.com/firebasejs/9.22.2/firebase-functions.js","firestore":"https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js","firestore/lite":"https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore/lite.js","installations":"https://www.gstatic.com/firebasejs/9.22.2/firebase-installations.js","storage":"https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js","performance":"https://www.gstatic.com/firebasejs/9.22.2/firebase-performance.js","remote-config":"https://www.gstatic.com/firebasejs/9.22.2/firebase-remote-config.js","messaging":"https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging.js","messaging/sw":"https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging/sw.js","database":"https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js","firestore.memory":"https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.memory.js"}}
+[info] ✔  Wrote public/index.html 
+[info] 
+[info] i  Detected a .git folder at /home/administrator/git/snapchat 
+[info] i  Authorizing with GitHub to upload your service account to a GitHub repository's secrets store. 
+[info] 
+[info] Visit this URL on this device to log in:
+[info] https://github.com/login/oauth/authorize?client_id=89cf50f02ac6aaed3484&state=499492252&redirect_uri=http%3A%2F%2Flocalhost%3A9005&scope=read%3Auser%20repo%20public_repo
+[info] 
+[info] Waiting for authentication...
+[debug] [2023-06-13T10:41:21.384Z] >>> [apiv2][query] POST https://github.com/login/oauth/access_token [none]
+[debug] [2023-06-13T10:41:21.384Z] >>> [apiv2][body] POST https://github.com/login/oauth/access_token [stream]
+[debug] [2023-06-13T10:41:22.125Z] <<< [apiv2][status] POST https://github.com/login/oauth/access_token 200
+[debug] [2023-06-13T10:41:22.125Z] <<< [apiv2][body] POST https://github.com/login/oauth/access_token {"access_token":"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","token_type":"bearer","scope":"read:user,repo"}
+[debug] [2023-06-13T10:41:22.141Z] >>> [apiv2][query] GET https://api.github.com/user [none]
+[debug] [2023-06-13T10:41:23.050Z] <<< [apiv2][status] GET https://api.github.com/user 200
+[debug] [2023-06-13T10:41:23.051Z] <<< [apiv2][body] GET https://api.github.com/user {"login":"adriankrawczyk","id":59731629,"node_id":"MDQ6VXNlcjU5NzMxNjI5","avatar_url":"https://avatars.githubusercontent.com/u/59731629?v=4","gravatar_id":"","url":"https://api.github.com/users/adriankrawczyk","html_url":"https://github.com/adriankrawczyk","followers_url":"https://api.github.com/users/adriankrawczyk/followers","following_url":"https://api.github.com/users/adriankrawczyk/following{/other_user}","gists_url":"https://api.github.com/users/adriankrawczyk/gists{/gist_id}","starred_url":"https://api.github.com/users/adriankrawczyk/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/adriankrawczyk/subscriptions","organizations_url":"https://api.github.com/users/adriankrawczyk/orgs","repos_url":"https://api.github.com/users/adriankrawczyk/repos","events_url":"https://api.github.com/users/adriankrawczyk/events{/privacy}","received_events_url":"https://api.github.com/users/adriankrawczyk/received_events","type":"User","site_admin":false,"name":null,"company":null,"blog":"","location":null,"email":null,"hireable":null,"bio":null,"twitter_username":null,"public_repos":4,"public_gists":0,"followers":1,"following":0,"created_at":"2020-01-10T11:26:53Z","updated_at":"2023-06-13T10:41:17Z","private_gists":0,"total_private_repos":0,"owned_private_repos":0,"disk_usage":12426,"collaborators":0,"two_factor_authentication":false,"plan":{"name":"free","space":976562499,"collaborators":0,"private_repos":10000}}
+[info] 
+[info] ✔  Success! Logged into GitHub as adriankrawczyk 
+[info] 
+[debug] [2023-06-13T10:41:36.641Z] >>> [apiv2][query] GET https://api.github.com/repos//actions/secrets/public-key type=owner
+[debug] [2023-06-13T10:41:37.044Z] <<< [apiv2][status] GET https://api.github.com/repos//actions/secrets/public-key 404
+[debug] [2023-06-13T10:41:37.045Z] <<< [apiv2][body] GET https://api.github.com/repos//actions/secrets/public-key {"message":"Not Found","documentation_url":"https://docs.github.com/rest"}
+[info] 
+[info] 
+[error] ⚠  The provided authorization cannot be used with this repository. If this repository is in an organization, did you remember to grant access? 
+[info] 
+[info] i  Action required: Visit this URL to ensure access has been granted to the appropriate organization(s) for the Firebase CLI GitHub OAuth App: 
+[info] https://github.com/settings/connections/applications/89cf50f02ac6aaed3484
+[info] 
+[debug] [2023-06-13T10:41:41.560Z] >>> [apiv2][query] GET https://api.github.com/repos//actions/secrets/public-key type=owner
+[debug] [2023-06-13T10:41:41.960Z] <<< [apiv2][status] GET https://api.github.com/repos//actions/secrets/public-key 404
+[debug] [2023-06-13T10:41:41.960Z] <<< [apiv2][body] GET https://api.github.com/repos//actions/secrets/public-key {"message":"Not Found","documentation_url":"https://docs.github.com/rest"}
+[info] 
+[info] 
+[error] ⚠  The provided authorization cannot be used with this repository. If this repository is in an organization, did you remember to grant access? 
+[info] 
+[info] i  Action required: Visit this URL to ensure access has been granted to the appropriate organization(s) for the Firebase CLI GitHub OAuth App: 
+[info] https://github.com/settings/connections/applications/89cf50f02ac6aaed3484
+[info] 
+[debug] [2023-06-13T10:41:53.437Z] >>> [apiv2][query] GET https://api.github.com/repos//actions/secrets/public-key type=owner
+[debug] [2023-06-13T10:41:53.783Z] <<< [apiv2][status] GET https://api.github.com/repos//actions/secrets/public-key 404
+[debug] [2023-06-13T10:41:53.783Z] <<< [apiv2][body] GET https://api.github.com/repos//actions/secrets/public-key {"message":"Not Found","documentation_url":"https://docs.github.com/rest"}
+[info] 
+[info] 
+[error] ⚠  The provided authorization cannot be used with this repository. If this repository is in an organization, did you remember to grant access? 
+[info] 
+[info] i  Action required: Visit this URL to ensure access has been granted to the appropriate organization(s) for the Firebase CLI GitHub OAuth App: 
+[info] https://github.com/settings/connections/applications/89cf50f02ac6aaed3484
+[info] 
