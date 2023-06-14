@@ -7,8 +7,15 @@ import { useState, useRef, useEffect } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { useIsFocused } from '@react-navigation/native';
+import { BackHandler } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { UserContext } from '../../App';
+import { useContext } from 'react';
+import ModalComponent from '../components/Modal';
+import * as SecureStore from 'expo-secure-store';
+import { Alert } from 'react-native';
 
-type CameraScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
+type CameraScreenProps = NativeStackScreenProps<RootStackParamList, 'Camera'>;
 const statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;
 
 const CameraScreen: React.FC<CameraScreenProps> = (props) => {
@@ -19,6 +26,17 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
   const [photoUri, setPhotoUri] = useState<string | undefined>(undefined);
   const [savedImages, setSavedImages] = useState<(string | undefined)[]>([]);
   const isFocused = useIsFocused();
+  const { username, setUsername } = useContext(UserContext);
+  const [modalVisible, setModalVisible] = useState(false);
+  useFocusEffect(() => {
+    const onBackPress = () => {
+      return true; // Return `true` to block going back
+    };
+
+    BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+    return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+  });
 
   useEffect(() => {
     (async () => {
@@ -37,7 +55,18 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
   function toggleCameraType() {
     setType((current) => (current === CameraType.back ? CameraType.front : CameraType.back));
   }
-
+  const handleLogout = async () => {
+    try {
+      await SecureStore.deleteItemAsync('username');
+      await SecureStore.deleteItemAsync('password');
+      setUsername('');
+      props.navigation.push('Home');
+      Alert.alert('Logout Successful', 'You have been logged out.');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to logout. Please try again later.');
+      console.error('Error logging out:', error);
+    }
+  };
   async function takePhoto() {
     if (cameraRef.current) {
       const { uri } = await cameraRef.current.takePictureAsync();
@@ -107,6 +136,10 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
           isFocused && (
             <Camera ref={cameraRef} type={type} style={{ flex: 1 }} ratio={'16:9'}>
               <TouchableOpacity style={styles.recordCircle} onPress={takePhoto}></TouchableOpacity>
+              <ModalComponent visible={modalVisible} onCancel={() => setModalVisible(false)} onAction={handleLogout} actionText='Logout' modalText={`Username: ${username}`} setModalVisible={setModalVisible} />
+              <TouchableOpacity style={styles.profile} onPress={() => setModalVisible(true)}>
+                <Image style={styles.profileImage} source={{ uri: `https://robohash.org/${username}.png?size=100x100` }} />
+              </TouchableOpacity>
             </Camera>
           )
         )}
@@ -133,6 +166,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     flex: 1,
     backgroundColor: 'black',
+  },
+  profile: {
+    width: 50,
+    height: 50,
+    left: 20,
+    top: 20,
+    borderRadius: 10,
+    backgroundColor: 'rgba(70, 70, 70, 0.5)',
+
+    position: 'absolute',
+  },
+  profileImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 10,
   },
   saveButton: { width: 50, height: 50, backgroundColor: 'rgba(70, 70, 70, 0.5)', bottom: 20, left: 20, position: 'absolute', borderRadius: 20, flex: 1, alignItems: 'center', justifyContent: 'center' },
   exitPhoto: { position: 'absolute', left: 20, top: 20 },
@@ -182,6 +230,39 @@ const styles = StyleSheet.create({
   bottomButton: {
     width: 50,
     height: '70%',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'rgb(30, 30, 30)',
+    borderColor: 'rgb(70, 70, 70)',
+    borderWidth: 3,
+    borderRadius: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    width: '80%',
+  },
+  modalText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 4,
+    backgroundColor: 'red',
+  },
+  modalButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });
 

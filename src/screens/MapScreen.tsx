@@ -7,14 +7,14 @@ import * as Location from 'expo-location';
 
 type MapScreenProps = NativeStackScreenProps<RootStackParamList, 'Map'>;
 
-const MapScreen: React.FC<MapScreenProps> = () => {
+const MapScreen: React.FC<MapScreenProps> = (props) => {
   const [region, setRegion] = React.useState<Region | undefined>(undefined);
 
   React.useEffect(() => {
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        console.error('Permission to access location was denied');
+        props.navigation.push('Camera');
         return;
       }
 
