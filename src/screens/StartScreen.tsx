@@ -69,7 +69,7 @@ const StartScreen: React.FC<StartScreenProps> = (props) => {
         const userData = {
           name: name,
           password: password,
-          friends: [{ name: 'Default' }],
+          friends: [{ name: 'Default', latitude: 49.61718, longitude: 20.71339 }],
         };
         await set(userRef, userData);
         Alert.alert('Registration Successful', 'You have successfully registered.');

@@ -1,24 +1,25 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/params';
-import { SafeAreaView, View, StyleSheet, StatusBar, FlatList, Text, Image, TouchableOpacity, Modal, Alert } from 'react-native';
+import { SafeAreaView, View, StyleSheet, FlatList, Text, Image, TouchableOpacity } from 'react-native';
 import { db } from '../firebase/firebase';
 import { ref, get, remove } from 'firebase/database';
 import { UserContext } from '../../App';
-import ModalComponent from '../components/Modal';
+import ModalComponent from '../components/ModalComponent';
 
 type Robot = {
   name: string;
 };
 
 type ChatScreenProps = NativeStackScreenProps<RootStackParamList, 'Friends'>;
-const statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;
 
-const FriendsScreen: React.FC<ChatScreenProps> = () => {
-  const { username } = useContext(UserContext);
+const FriendsScreen: React.FC<ChatScreenProps> = (props) => {
+  const { username, setCurrentChatFriend } = useContext(UserContext);
   const [friendList, setFriendList] = useState<Robot[]>([]); // State to store the friend list data
   const [selectedFriend, setSelectedFriend] = useState<Robot | null>(null); // State to store the selected friend for deletion
   const [modalVisible, setModalVisible] = useState(false); // State to control the visibility of the modal
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
   const onCancelModal = () => {
     setModalVisible(false);
   };
@@ -75,7 +76,19 @@ const FriendsScreen: React.FC<ChatScreenProps> = () => {
 
   const renderFriend = ({ item }: { item: Robot }) => {
     return (
-      <View style={styles.friendItem}>
+      <TouchableOpacity
+        style={[styles.friendItem, isButtonDisabled && styles.disabledButton]}
+        onPress={() => {
+          if (!isButtonDisabled) {
+            setIsButtonDisabled(true);
+            setCurrentChatFriend(item.name);
+            props.navigation.push('Chat');
+            setTimeout(() => {
+              setIsButtonDisabled(false);
+            }, 1000);
+          }
+        }}
+        disabled={isButtonDisabled}>
         <View style={styles.friendImageContainer}>
           <Image source={{ uri: `https://robohash.org/${item.name}?size=200x200` }} style={styles.friendImage} />
         </View>
@@ -87,7 +100,7 @@ const FriendsScreen: React.FC<ChatScreenProps> = () => {
             <Text style={styles.deleteButtonText}>Delete</Text>
           </TouchableOpacity>
         )}
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -106,6 +119,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'black',
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
   header: {
     marginTop: 50,

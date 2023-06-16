@@ -9,6 +9,8 @@ import { UserContext } from '../../App';
 
 type Robot = {
   name: string;
+  longitude: number;
+  latitude: number;
 };
 
 type SearchScreenProps = NativeStackScreenProps<RootStackParamList, 'Search'>;
@@ -50,7 +52,7 @@ const SearchScreen: React.FC<SearchScreenProps> = () => {
   const addToFriends = async (item: Robot) => {
     try {
       const userRef = ref(db, `Users/${username}/friends`);
-      const pushPromise = push(userRef, { name: item.name });
+      const pushPromise = push(userRef, { name: item.name, latitude: item.latitude, longitude: item.longitude });
       setFriends((prevFriends) => [...prevFriends, item.name]);
     } catch (error) {
       console.error('Error adding robot to friends:', error);

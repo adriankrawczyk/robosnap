@@ -9,9 +9,10 @@ type ModalComponentProps = {
   actionText: string;
   modalText: string;
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  hideAction?: boolean;
 };
 
-const ModalComponent: React.FC<ModalComponentProps> = ({ visible, onCancel, onAction, actionText, setModalVisible, modalText }) => {
+const ModalComponent: React.FC<ModalComponentProps> = ({ visible, onCancel, onAction, actionText, setModalVisible, modalText, hideAction }) => {
   if (!visible) {
     return null;
   }
@@ -25,7 +26,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({ visible, onCancel, onAc
             <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
               <Text style={styles.modalButtonText}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.modalButton} onPress={onAction}>
+            <TouchableOpacity style={[styles.modalButton, { display: hideAction ? 'none' : 'flex' }]} onPress={onAction}>
               <Text style={styles.modalButtonText}>{actionText}</Text>
             </TouchableOpacity>
           </View>

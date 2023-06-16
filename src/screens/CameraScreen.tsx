@@ -2,7 +2,7 @@ import * as React from 'react';
 import { TouchableOpacity, View, StyleSheet, SafeAreaView, StatusBar, FlatList, Image } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/params';
-import { Camera, CameraType } from 'expo-camera';
+import { Camera, CameraType, FlashMode } from 'expo-camera';
 import { useState, useRef, useEffect } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -11,7 +11,7 @@ import { BackHandler } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { UserContext } from '../../App';
 import { useContext } from 'react';
-import ModalComponent from '../components/Modal';
+import ModalComponent from '../components/ModalComponent';
 import * as SecureStore from 'expo-secure-store';
 import { Alert } from 'react-native';
 
@@ -19,6 +19,7 @@ type CameraScreenProps = NativeStackScreenProps<RootStackParamList, 'Camera'>;
 const statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;
 
 const CameraScreen: React.FC<CameraScreenProps> = (props) => {
+  const [flashMode, setFlashMode] = useState(FlashMode.off);
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const cameraRef = useRef<Camera>(null);
@@ -28,6 +29,7 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
   const isFocused = useIsFocused();
   const { username, setUsername } = useContext(UserContext);
   const [modalVisible, setModalVisible] = useState(false);
+
   useFocusEffect(() => {
     const onBackPress = () => {
       return true; // Return `true` to block going back
@@ -52,6 +54,9 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
     }
   }, [isFocused]);
 
+  const toggleFlashlight = () => {
+    setFlashMode((current) => (current === FlashMode.off ? FlashMode.torch : FlashMode.off));
+  };
   function toggleCameraType() {
     setType((current) => (current === CameraType.back ? CameraType.front : CameraType.back));
   }
@@ -104,7 +109,7 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
 
   const bottomPanelData: BottomPanelItem[] = [
     { id: 1, name: 'map-marker-outline', screen: 'Map' },
-    { id: 2, name: 'chat-outline', screen: 'Chat' },
+    { id: 2, name: 'chat-outline', screen: 'Friends' },
     { id: 3, name: 'image-outline', screen: 'Library' },
     { id: 4, name: 'magnify', screen: 'Search' },
   ];
@@ -134,7 +139,7 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
           </>
         ) : (
           isFocused && (
-            <Camera ref={cameraRef} type={type} style={{ flex: 1 }} ratio={'16:9'}>
+            <Camera ref={cameraRef} type={type} flashMode={flashMode} style={{ flex: 1 }} ratio={'16:9'}>
               <TouchableOpacity style={styles.recordCircle} onPress={takePhoto}></TouchableOpacity>
               <ModalComponent visible={modalVisible} onCancel={() => setModalVisible(false)} onAction={handleLogout} actionText='Logout' modalText={`Username: ${username}`} setModalVisible={setModalVisible} />
               <TouchableOpacity style={styles.profile} onPress={() => setModalVisible(true)}>
@@ -150,6 +155,9 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
         <View style={styles.rightPanel}>
           <TouchableOpacity onPress={toggleCameraType}>
             <MaterialCommunityIcons name='camera-flip-outline' size={30} color='black' />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={toggleFlashlight}>
+            <MaterialCommunityIcons name={flashMode === FlashMode.off ? 'flash-off' : 'flash'} size={30} color='black' />
           </TouchableOpacity>
         </View>
       )}
@@ -206,15 +214,17 @@ const styles = StyleSheet.create({
   rightPanel: {
     paddingTop: 5,
     alignItems: 'center',
+    justifyContent: 'space-evenly',
     flexDirection: 'column',
     position: 'absolute',
     top: statusBarHeight + 40,
     right: 20,
     width: 40,
-    height: 200,
+    height: 100,
     backgroundColor: 'rgba(70, 70, 70, 0.5)',
     borderRadius: 10,
   },
+
   bottomList: {
     justifyContent: 'space-evenly',
     alignItems: 'center',
