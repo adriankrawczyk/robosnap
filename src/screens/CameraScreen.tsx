@@ -14,7 +14,17 @@ import { useContext } from 'react';
 import ModalComponent from '../components/ModalComponent';
 import * as SecureStore from 'expo-secure-store';
 import { Alert } from 'react-native';
+import 'firebase/storage';
+import { getStorage, ref, uploadString, uploadBytesResumable } from 'firebase/storage';
+import { app } from '../firebase/firebase';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
 
+import '@firebase/polyfill';
+import { decode } from 'base-64';
+
+if (typeof atob === 'undefined') {
+  global.atob = decode;
+}
 type CameraScreenProps = NativeStackScreenProps<RootStackParamList, 'Camera'>;
 const statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;
 
@@ -24,14 +34,18 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const cameraRef = useRef<Camera>(null);
   const [photoShot, setPhotoShot] = useState(Boolean);
-  const [photoUri, setPhotoUri] = useState<string | undefined>(undefined);
+  const [photoUri, setPhotoUri] = useState<string>('');
   const [savedImages, setSavedImages] = useState<(string | undefined)[]>([]);
   const isFocused = useIsFocused();
   const { username, setUsername } = useContext(UserContext);
   const [modalVisible, setModalVisible] = useState(false);
+  const [photoSaved, setPhotoSaved] = useState(false);
 
   useFocusEffect(() => {
     const onBackPress = () => {
+      if (photoShot) {
+        setPhotoShot(false);
+      }
       return true; // Return `true` to block going back
     };
 
@@ -50,7 +64,7 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
     if (!isFocused) {
       // Reset camera state when the screen loses focus
       setPhotoShot(false);
-      setPhotoUri(undefined);
+      setPhotoUri('');
     }
   }, [isFocused]);
 
@@ -75,26 +89,48 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
   async function takePhoto() {
     if (cameraRef.current) {
       const { uri } = await cameraRef.current.takePictureAsync();
-      let finalUri = uri;
-
-      if (type === CameraType.front) {
-        finalUri = await flipImage(uri);
+      if (uri) {
+        let finalUri = uri;
+        if (type === CameraType.front) {
+          finalUri = await flipImage(uri);
+        }
+        setPhotoShot(true);
+        setPhotoUri(finalUri);
       }
-
-      setPhotoShot(true);
-      setPhotoUri(finalUri);
     }
   }
-
   async function flipImage(uri: string) {
     const manipResult = await ImageManipulator.manipulateAsync(uri, [{ flip: ImageManipulator.FlipType.Horizontal }]);
     return manipResult.uri;
   }
+  const saveImage = async () => {
+    if (photoSaved) return;
 
-  const saveImage = () => {
-    const newArray = [...savedImages, photoUri];
-    setSavedImages(newArray);
-    console.log(savedImages);
+    try {
+      const storage = getStorage();
+      const storageRef = ref(storage, `images/${Date.now()}`);
+      const response = await fetch(photoUri);
+      const blob = await response.blob();
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+
+      uploadTask.on('state_changed', (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log('Upload is ' + progress + '% done');
+        switch (snapshot.state) {
+          case 'paused':
+            console.log('Upload is paused');
+            break;
+          case 'running':
+            console.log('Upload is running');
+            break;
+        }
+      });
+      setPhotoSaved(true);
+    } catch (error) {
+      // Handle any errors that occur during the Firebase storage operation
+      Alert.alert('Error', 'Failed to save image. Please try again later.');
+      console.error('Error saving image:', error);
+    }
   };
 
   if (permission && !permission.granted) {
@@ -114,12 +150,13 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
     { id: 4, name: 'magnify', screen: 'Search' },
   ];
 
-  const renderItem = ({ item }: { item: BottomPanelItem }) => (
-    <TouchableOpacity onPress={() => props.navigation.push(item.screen)}>
-      <MaterialCommunityIcons name={item.name} size={40} color='black' />
-    </TouchableOpacity>
-  );
-
+  const renderItem = ({ item }: { item: BottomPanelItem }) => {
+    return (
+      <TouchableOpacity onPress={() => props.navigation.push(item.screen)}>
+        <MaterialCommunityIcons name={item.name} size={40} color='black' />
+      </TouchableOpacity>
+    );
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.camera}>
@@ -129,12 +166,13 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
             <TouchableOpacity
               style={styles.exitPhoto}
               onPress={() => {
+                setPhotoSaved(false);
                 setPhotoShot(false);
               }}>
               <MaterialCommunityIcons name={'close'} size={40} color='black' />
             </TouchableOpacity>
             <TouchableOpacity style={styles.saveButton} onPress={saveImage}>
-              <MaterialCommunityIcons name='content-save-outline' size={40} color='black' />
+              <MaterialCommunityIcons name={photoSaved ? 'check' : 'content-save-outline'} size={40} color={'black'} />
             </TouchableOpacity>
           </>
         ) : (
