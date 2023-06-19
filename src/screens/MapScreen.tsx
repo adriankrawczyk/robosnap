@@ -17,6 +17,7 @@ interface Robot {
 }
 
 const MapScreen: React.FC<MapScreenProps> = (props) => {
+  console.log(Date.now());
   const [region, setRegion] = useState<Region | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [robots, setRobots] = useState<Robot[]>([]);

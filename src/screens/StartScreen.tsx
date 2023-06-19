@@ -7,6 +7,7 @@ import { ref, set, get } from 'firebase/database';
 import { UserContext } from '../../App';
 import * as SecureStore from 'expo-secure-store';
 import { useEffect } from 'react';
+import * as Location from 'expo-location';
 
 type StartScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -14,7 +15,23 @@ const StartScreen: React.FC<StartScreenProps> = (props) => {
   const { setUsername } = useContext(UserContext);
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+  useEffect(() => {
+    // Get the user's location when the component mounts
+    const getLocationAsync = async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status === 'granted') {
+        const location = await Location.getCurrentPositionAsync();
+        setLatitude(location.coords.latitude);
+        setLongitude(location.coords.longitude);
+      } else {
+        console.error('Location permission not granted');
+      }
+    };
 
+    getLocationAsync();
+  }, []);
   useEffect(() => {
     const retrieveCredentials = async () => {
       try {
@@ -69,13 +86,30 @@ const StartScreen: React.FC<StartScreenProps> = (props) => {
         const userData = {
           name: name,
           password: password,
-          friends: [{ name: 'Default', latitude: 49.61718, longitude: 20.71339 }],
+          friends: [{ name: 'Default', latitude: 49.61718, longitude: 20.71339, bot: true }],
         };
         await set(userRef, userData);
+
+        // Add new user to /Robots collection
+        const robotsRef = ref(db, 'Robots');
+        const existingData = await get(robotsRef);
+        const newUserData = {
+          name: name,
+          latitude,
+          longitude,
+          bot: false,
+        };
+
+        if (existingData.exists()) {
+          const updatedData = { ...existingData.val(), [name]: newUserData };
+          await set(robotsRef, updatedData);
+        } else {
+          await set(robotsRef, { [name]: newUserData });
+        }
+
         Alert.alert('Registration Successful', 'You have successfully registered.');
 
         // Automatically log in after registration
-
         handleLogin();
       }
     } catch (error) {

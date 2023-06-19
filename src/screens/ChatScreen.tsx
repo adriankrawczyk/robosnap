@@ -17,10 +17,13 @@ const ChatScreen: React.FC<ChatScreenProps> = () => {
     text: string;
     timestamp: number;
   };
+
   const { currentChatFriend, username } = useContext(UserContext);
   const [messages, setMessages] = useState<Message[]>([]);
   const flatListRef = useRef<FlatList<Message>>(null);
   const [text, setText] = useState('');
+  const chatContainerName = [currentChatFriend, username].sort().join(''); // Combine names alphabetically
+
   const scroll = () => {
     if (messages.length > 0 && flatListRef && flatListRef.current) {
       const speed = 50;
@@ -28,96 +31,60 @@ const ChatScreen: React.FC<ChatScreenProps> = () => {
       flatListRef.current.scrollToOffset({ offset, animated: true });
     }
   };
+
   useEffect(() => {
-    const userRef = ref(db, `Users/${username}/friends`);
-    get(userRef)
+    const chatRef = ref(db, `Chats/${chatContainerName}`);
+    const defaultMessage = {
+      id: -1,
+      text: '',
+      timestamp: Date.now(),
+    };
+    // Create the chat container if it doesn't exist
+    get(chatRef)
       .then((snapshot) => {
-        if (snapshot.exists()) {
-          const friendsData = snapshot.val();
-          const matchingFriendKey = Object.keys(friendsData).find((key) => (friendsData[key] as { name: string }).name === currentChatFriend);
-
-          if (matchingFriendKey) {
-            const matchingFriend = friendsData[matchingFriendKey];
-
-            if (!matchingFriend.chats) {
-              const friendRef = ref(db, `Users/${username}/friends/${matchingFriendKey}/chats`);
-              update(friendRef, { id: -1, text: '', timestamp: Date.now() }).catch((error) => {
-                console.error('Error updating friend data:', error);
-              });
-            }
-          } else {
-            console.log('No friend with this name found');
-          }
-        } else {
-          console.log('No friends found');
+        if (!snapshot.exists()) {
+          set(chatRef, defaultMessage).catch((error) => {
+            console.error('Error creating chat container:', error);
+          });
         }
       })
       .catch((error) => {
         console.error('Error reading data:', error);
       });
-  }, []);
+  }, [chatContainerName]);
 
   useEffect(() => {
-    const friendRef = ref(db, `Users/${username}/friends`);
-    const chatListener = onValue(friendRef, (snapshot) => {
+    const chatRef = ref(db, `Chats/${chatContainerName}`);
+    const chatListener = onValue(chatRef, (snapshot) => {
       if (snapshot.exists()) {
-        const friendsData = snapshot.val();
-        const matchingFriendKey = Object.keys(friendsData).find((key) => (friendsData[key] as { name: string }).name === currentChatFriend);
-
-        if (matchingFriendKey) {
-          const matchingFriend = friendsData[matchingFriendKey];
-
-          if (matchingFriend.chats) {
-            const chatData = matchingFriend.chats;
-            const chatList: Message[] = Object.values(chatData);
-            const sortedMessages = chatList.sort((a, b) => a.timestamp - b.timestamp);
-            setMessages(sortedMessages);
-          } else {
-            setMessages([]);
-          }
-        }
+        const chatData = snapshot.val();
+        const chatList: Message[] = Object.values(chatData);
+        const sortedMessages = chatList.sort((a, b) => a.timestamp - b.timestamp);
+        setMessages(sortedMessages);
+      } else {
+        setMessages([]);
       }
     });
 
     return () => {
-      off(friendRef, 'value', chatListener);
+      off(chatRef, 'value', chatListener);
     };
-  }, [currentChatFriend]);
+  }, [chatContainerName]);
 
   const sendMessage = () => {
     if (text.trim() !== '') {
-      const userRef = ref(db, `Users/${username}/friends`);
-      get(userRef)
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            const friendsData = snapshot.val();
-            const matchingFriendKey = Object.keys(friendsData).find((key) => (friendsData[key] as { name: string }).name === currentChatFriend);
-
-            if (matchingFriendKey) {
-              const matchingFriend = friendsData[matchingFriendKey];
-
-              if (matchingFriend.chats) {
-                const chatRef = ref(db, `Users/${username}/friends/${matchingFriendKey}/chats`);
-                const newMessageRef = push(chatRef);
-                const newMessageKey = newMessageRef.key;
-                if (newMessageKey) {
-                  set(newMessageRef, {
-                    text: text.trim(),
-                    sender: username,
-                    timestamp: Date.now(),
-                  });
-                }
-              }
-            } else {
-              console.log('No friend with this name found');
-            }
-          } else {
-            console.log('No friends found');
-          }
-        })
-        .catch((error) => {
-          console.error('Error reading data:', error);
+      const chatRef = ref(db, `Chats/${chatContainerName}`);
+      const newMessageRef = push(chatRef);
+      const newMessageKey = newMessageRef.key;
+      if (newMessageKey) {
+        set(newMessageRef, {
+          text: text.trim(),
+          sender: username,
+          timestamp: Date.now(),
+        }).catch((error) => {
+          console.error('Error sending message:', error);
         });
+      }
 
       setText('');
     }
@@ -127,9 +94,14 @@ const ChatScreen: React.FC<ChatScreenProps> = () => {
     if (!item || !item.text || !item.timestamp) {
       return null;
     }
+
+    const isCurrentUser = item.sender === username;
+    const messageContainerStyle = isCurrentUser ? [styles.messageContainer, styles.currentUserMessage] : styles.messageContainer;
+    const messageTextStyle = isCurrentUser ? [styles.message, styles.currentUserMessageText] : styles.message;
+
     return (
-      <View key={item.id} style={styles.messageContainer}>
-        <Text style={styles.message}>{item.text}</Text>
+      <View key={item.id} style={messageContainerStyle}>
+        <Text style={messageTextStyle}>{item.text}</Text>
       </View>
     );
   };
@@ -219,13 +191,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white',
   },
-  message: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
+
   messageContainer: {
     marginLeft: 20,
+    marginRight: 20,
     paddingVertical: 5,
     paddingHorizontal: 10,
     backgroundColor: 'rgba(70, 70, 70, 0.5)',
@@ -233,6 +202,18 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignSelf: 'flex-start',
     maxWidth: '80%',
+  },
+  currentUserMessage: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#007AFF',
+  },
+  message: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  currentUserMessageText: {
+    color: 'white',
   },
   inputContainer: {
     flexDirection: 'row',

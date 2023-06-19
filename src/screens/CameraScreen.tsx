@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TouchableOpacity, View, StyleSheet, SafeAreaView, StatusBar, FlatList, Image } from 'react-native';
+import { TouchableOpacity, View, StyleSheet, SafeAreaView, StatusBar, FlatList, Image, ActivityIndicator } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/params';
 import { Camera, CameraType, FlashMode } from 'expo-camera';
@@ -40,11 +40,13 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
   const { username, setUsername } = useContext(UserContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [photoSaved, setPhotoSaved] = useState(false);
-
+  const [savingImage, setSavingImage] = useState(false);
   useFocusEffect(() => {
     const onBackPress = () => {
       if (photoShot) {
+        setPhotoSaved(false);
         setPhotoShot(false);
+        setSavingImage(false);
       }
       return true; // Return `true` to block going back
     };
@@ -59,14 +61,6 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
       requestPermission();
     })();
   }, []);
-
-  useEffect(() => {
-    if (!isFocused) {
-      // Reset camera state when the screen loses focus
-      setPhotoShot(false);
-      setPhotoUri('');
-    }
-  }, [isFocused]);
 
   const toggleFlashlight = () => {
     setFlashMode((current) => (current === FlashMode.off ? FlashMode.torch : FlashMode.off));
@@ -94,6 +88,7 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
         if (type === CameraType.front) {
           finalUri = await flipImage(uri);
         }
+        setSavingImage(false);
         setPhotoShot(true);
         setPhotoUri(finalUri);
       }
@@ -105,29 +100,31 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
   }
   const saveImage = async () => {
     if (photoSaved) return;
-
+    setSavingImage(true);
     try {
       const storage = getStorage();
-      const storageRef = ref(storage, `images/${Date.now()}`);
+      const storageRef = ref(storage, `${username}/${Date.now()}`);
       const response = await fetch(photoUri);
       const blob = await response.blob();
       const uploadTask = uploadBytesResumable(storageRef, blob);
 
       uploadTask.on('state_changed', (snapshot) => {
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        if (progress === 100) setSavingImage(false);
         console.log('Upload is ' + progress + '% done');
         switch (snapshot.state) {
           case 'paused':
             console.log('Upload is paused');
             break;
           case 'running':
-            console.log('Upload is running');
             break;
         }
       });
+
       setPhotoSaved(true);
     } catch (error) {
       // Handle any errors that occur during the Firebase storage operation
+      setSavingImage(false);
       Alert.alert('Error', 'Failed to save image. Please try again later.');
       console.error('Error saving image:', error);
     }
@@ -172,7 +169,7 @@ const CameraScreen: React.FC<CameraScreenProps> = (props) => {
               <MaterialCommunityIcons name={'close'} size={40} color='black' />
             </TouchableOpacity>
             <TouchableOpacity style={styles.saveButton} onPress={saveImage}>
-              <MaterialCommunityIcons name={photoSaved ? 'check' : 'content-save-outline'} size={40} color={'black'} />
+              {savingImage ? <ActivityIndicator size='large' color='black' /> : <MaterialCommunityIcons name={photoSaved ? 'check' : 'content-save-outline'} size={40} color={'black'} />}
             </TouchableOpacity>
           </>
         ) : (
